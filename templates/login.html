@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- 添加viewport元标签 -->
+    <title>使用者登入</title>
+
+    <style>
+        /* 基本样式不变，将所有样式放在@media查询中 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: url('/media/Login_background.jpg') no-repeat;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .wrapper {
+            width: 420px;
+            background: transparent;
+            border: 2px solid rgba(255, 255, 255, 2);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 0 10px rgba(0, 0, 0, .2);
+            color: white;
+            border-radius: 10px;
+            padding: 30px 40px;
+        }
+
+        .wrapper h1 {
+            font-size: 36px;
+            text-align: center;
+        }
+
+        .wrapper .input-box {
+            position: relative;
+            width: 100%;
+            height: 50px;
+            border-bottom: 2px solid #fff;
+            margin: 30px 0;
+        }
+
+        .input-box input {
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            border: none;
+            outline: none;
+            font-size: 1em;
+            color: #fff;
+            font-weight: 600;
+            padding: 0 40px 0 12px;
+        }
+
+        .input-box label {
+            position: absolute;
+            top: 0%;
+            left: 5px;
+            transform: translateY(-50%);
+            font-size: 17px;
+            font-weight: 500;
+            pointer-events: none;
+            transition: .5s;
+        }
+
+        .input-box input:focus~label,
+        .input-box input:valid~label {
+            top: -5px;
+        }
+
+        .input-box box-icon {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 20px;
+        }
+
+        .wrapper .remember-forgot {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14.5px;
+            margin: -15px 0 15px;
+        }
+
+        .remember-forgot label input {
+            accent-color: white;
+            margin-right: 3px;
+        }
+
+        .remember-forgot a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .remember-forgot a:hover {
+            text-decoration: underline;
+        }
+
+        .wrapper .btn {
+            width: 100%;
+            height: 45px;
+            background: white;
+            border: none;
+            outline: none;
+            border-radius: 40px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, .1);
+            cursor: pointer;
+            font-size: 16px;
+            color: black;
+            font-weight: 600;
+        }
+
+        .wrapper .register-link {
+            font-size: 14.5px;
+            text-align: center;
+            margin: 20px 0 15px;
+        }
+
+        .register-link p a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .register-link p a:hover {
+            text-decoration: underline;
+        }
+
+        /* 添加@media查询，根据不同的屏幕宽度应用不同的样式 */
+        @media (max-width: 768px) {
+            .wrapper {
+                width: 80%; /* 调整宽度以适应小屏幕 */
+            }
+        }
+
+        @media (max-width: 480px) {
+            .wrapper {
+                width: 90%; /* 调整宽度以适应更小的屏幕 */
+            }
+
+            .wrapper h1 {
+                font-size: 28px; /* 调整标题字体大小 */
+            }
+        }
+    </style>
+    <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
+</head>
+<body>
+<div class="wrapper">
+    <form method="POST" action="">
+        <h1>登入</h1>
+        {% csrf_token %}
+        <div class="input-box">
+            <label>帳號</label>
+            {{ form.username }}
+            <box-icon name='user' type='solid' color="#fff"></box-icon>
+        </div>
+        <div class="input-box">
+            <label>密碼</label>
+            {{ form.password }}
+            <box-icon name='lock-alt' type='solid' color="#fff"></box-icon>
+        </div>
+        <div class="remember-forgot">
+            <label><input type="checkbox" name="remember" id="remember">記住帳號</label>
+            <a href="#" onclick="window.location.href='resetPwd'">忘記密碼？</a>
+        </div>
+        <button type="submit" class="btn">登入</button>
+        <div class="register-link">
+            <p>沒有帳號嗎？ <a href="#" onclick="window.location.href='identitySelect/'">註冊</a> </p>
+        </div>
+    </form>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+<script>
+    function createMobileMenu() {
+    const navbar = document.querySelector(".navbar");
+    const mobileMenu = document.createElement("select");
+    mobileMenu.id = "mobile-menu";
+    mobileMenu.classList.add("mobile-menu");
+    mobileMenu.addEventListener("change", redirectToPage);
+
+    const menuOptions = [
+        { text: "選單", value: "" },
+        { text: "訓練模式", value: "{% url 'Training_mode' %}" },
+        { text: "商店", value: "{% url 'store' %}" },
+        { text: "個人資料", value: "{% url 'myprofile' %}" },
+        { text: "聯絡治療師", value: "{% url 'contact_therapists' %}" },
+        { text: "登出", value: "{% url 'logout' %}" },
+    ];
+
+    menuOptions.forEach(option => {
+        const menuItem = document.createElement("option");
+        menuItem.textContent = option.text;
+        menuItem.value = option.value;
+        mobileMenu.appendChild(menuItem);
+    });
+
+    navbar.appendChild(mobileMenu);
+}
+
+function redirectToPage() {
+    const selectedValue = document.getElementById("mobile-menu").value;
+    if (selectedValue) {
+        window.location.href = selectedValue;
+    }
+}
+
+// 檢查螢幕大小並在需要時創建下拉式選單
+function checkScreenWidth() {
+    const screenWidth = window.innerWidth;
+    const mobileMenuExists = document.getElementById("mobile-menu");
+
+    if (screenWidth <= 768 && !mobileMenuExists) {
+        createMobileMenu();
+    } else if (screenWidth > 768 && mobileMenuExists) {
+        const mobileMenu = document.getElementById("mobile-menu");
+        mobileMenu.remove();
+    }
+}
+
+// 監聽窗口大小變化
+window.addEventListener("resize", checkScreenWidth);
+
+// 頁面載入時檢查一次
+window.addEventListener("load", checkScreenWidth);
+</script>
+</body>
+</html>

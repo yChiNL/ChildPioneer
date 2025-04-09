@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>我的治療紀錄</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <style>
+        @import url(https://fonts.googleapis.com/css?family=Signika:700,300,600);
+
+        html, body { height: 100%; }
+
+        h1 {
+            font-size:5em;
+            user-select:none;
+            text-align: center;
+        }
+
+        h1 span { display:inline-block; animation:float .2s ease-in-out infinite; }
+            @keyframes float { 0%,100%{ transform:none; }
+            33%{ transform:translateY(-1px) rotate(-2deg); }
+            66%{ transform:translateY(1px) rotate(2deg); }
+        }
+
+        body:hover span { animation:bounce .6s; }
+            @keyframes bounce {
+            0%,100%{ transform:translate(0); }
+            25%{ transform:rotateX(20deg) translateY(2px) rotate(-3deg); }
+            50%{ transform:translateY(-20px) rotate(3deg) scale(1.1);  }
+        }
+
+        span:nth-child(4n) { color:hsl(30, 80%, 75%); text-shadow:1px 1px hsl(50, 75%, 45%), 2px 2px hsl(50, 45%, 45%), 3px 3px hsl(50, 45%, 45%), 4px 4px hsl(50, 75%, 45%); }
+        span:nth-child(4n-1) { color:hsl(135, 35%, 75%); text-shadow:1px 1px hsl(135, 35%, 45%), 2px 2px hsl(135, 35%, 45%), 3px 3px hsl(135, 35%, 45%), 4px 4px hsl(135, 35%, 45%); }
+        span:nth-child(4n-2) { color:hsl(48, 100%, 63%); text-shadow:1px 1px hsl(39, 64%, 47%), 2px 2px hsl(39, 64%, 47%), 3px 3px hsl(39, 64%, 47%), 4px 4px hsl(39, 64%, 47%); }
+        span:nth-child(4n-3) { color:hsl(340, 59%, 62%); text-shadow:1px 1px hsl(350, 45%, 50%), 2px 2px hsl(350, 45%, 50%), 3px 3px hsl(350, 45%, 50%), 4px 4px hsl(350, 45%, 50%); }
+
+        h1 span:nth-child(2){ animation-delay:.05s; }
+        h1 span:nth-child(3){ animation-delay:.1s; }
+        h1 span:nth-child(4){ animation-delay:.15s; }
+        h1 span:nth-child(5){ animation-delay:.2s; }
+        h1 span:nth-child(6){ animation-delay:.25s; }
+        h1 span:nth-child(7){ animation-delay:.3s; }
+        h1 span:nth-child(8){ animation-delay:.35s; }
+        h1 span:nth-child(9){ animation-delay:.4s; }
+        h1 span:nth-child(10){ animation-delay:.45s; }
+        h1 span:nth-child(11){ animation-delay:.5s; }
+        h1 span:nth-child(12){ animation-delay:.55s; }
+        h1 span:nth-child(13){ animation-delay:.6s; }
+        h1 span:nth-child(14){ animation-delay:.65s; }
+
+        @font-face {
+            font-family: 'cwTeXYen';
+            font-style: normal;
+            font-weight: 500;
+            src: url(//fonts.gstatic.com/ea/cwtexyen/v3/cwTeXYen-zhonly.eot);
+            src: url(//fonts.gstatic.com/ea/cwtexyen/v3/cwTeXYen-zhonly.eot?#iefix) format('embedded-opentype'),
+            url(//fonts.gstatic.com/ea/cwtexyen/v3/cwTeXYen-zhonly.woff2) format('woff2'),
+            url(//fonts.gstatic.com/ea/cwtexyen/v3/cwTeXYen-zhonly.woff) format('woff'),
+            url(//fonts.gstatic.com/ea/cwtexyen/v3/cwTeXYen-zhonly.ttf) format('truetype');
+        }
+        * {
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:"cwTeXYen","Lucida Sans Unicode", sans-serif;
+        }
+        body {
+            justify-content:center;
+            align-items:center;
+            min-height:100vh;
+            background:url('/media/background.jpg');
+            background-repeat: repeat;
+        }
+        .header {
+            position:fixed;
+            top:0;
+            left:0;
+            width:100%;
+            height: 54px;
+            padding: 7px 50px;
+            background: #8B4513;
+            display: flex;
+            justify-content:space-between;
+            align-items:center;
+            z-index:100;
+        }
+        .logo {
+            height: 40px;
+        }
+        .navbar a {
+            position:relative;
+            font-size:20px;
+            color: #fae7cd;
+            font-weight:500;
+            text-decoration: none;
+            margin-left:40px;
+        }
+        .navbar a::before {
+            content: '';
+            position:absolute;
+            top:100%;
+            left:0;
+            width:0;
+            height:3px;
+            background:#fae7cd;
+            transition: .3s;
+        }
+        .navbar a:hover::before {
+            width: 100%;
+        }
+        .logout {
+            font-size: 18px;
+            width: 80px;
+            height: 35px;
+            margin-left: 40px;
+            background:white;
+            border:none;
+            outline:none;
+            border-radius:40px;
+            box-shadow:0 0 10px rgba(0,0,0,.1);
+            cursor:pointer;
+            font-size:16px;
+            color:#8B4513;
+            font-weight:600;
+            transition: .3s;
+        }
+        .logout:hover {
+            transform: scale(1.08);
+        }
+        .select button {
+            font-size: 22px;
+            font-weight: 600;
+            width: 120px;
+            height: 35px;
+            border: 2px solid #ff974d;
+            background-color: #fcc299;
+            color:brown;
+            border-radius:13px;
+            transition: .3s;
+        }
+        .select button:hover {
+            height: 40px;
+        }
+
+        .chartContainer {
+            display: grid; /* 使用Grid布局 */
+            grid-template-columns: 1fr 1fr 1fr 1fr; /* 定义4列，每列平均分配可用空间 */
+            gap: 20px; /* 设置列之间的间隔 */
+            text-align: center; /* 文本居中对齐 */
+            margin: 10px auto; /* 设置外边距，自动水平居中 */
+            max-width: 1200px; /* 根据需要设置最大宽度 */
+        }
+        #timeChartContainer {
+            grid-column: span 4; /* 占满所有列 */
+        }
+
+        #mainChartContainer {
+            grid-column: span 4; /* 占满所有列 */
+            width: 97%; /* 设置宽度为100%以占满父元素的宽度 */
+            height: 400px; /* 设置高度为400像素，你可以根据需要调整高度 */
+            box-shadow: 0 0 25px rgba(56,19,8,.3); /* 添加阴影，可以根据需要调整阴影的颜色和大小 */
+            backdrop-filter:blur(10px);
+        }
+
+        .subChartContainer {
+            padding: 10px;
+            background-color: transparent; /* 将子图表容器背景颜色设置为透明 */
+            width: 600px; /* 根据需要设置宽度 */
+            height: 300px; /* 根据需要设置高度 */
+            box-shadow: 0 0 25px rgba(56,19,8,.3); /* 添加阴影，可以根据需要调整阴影的颜色和大小 */
+            backdrop-filter:blur(10px);
+        }
+        .h2{
+        text-align: center;
+        }
+
+        /* 添加@media查询，根据不同的屏幕宽度应用不同的样式 */
+        @media (max-width: 1024px) {
+            .navbar a {
+                font-size: 18px;
+                margin-left: 20px;
+            }
+
+            .logout {
+                font-size: 16px;
+                margin-left: 20px;
+            }
+
+            .btn-container {
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .btn {
+                width: 80%;
+                max-width: 250px;
+                height: 280px;
+                font-size: 30px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar a {
+                display: none;
+                font-size: 16px;
+                margin-left: 15px;
+            }
+
+            .logout {
+                display: none;
+                font-size: 14px;
+                margin-left: 15px;
+                width: 60px;
+                height: 30px;
+            }
+
+            .btn {
+                width: 70%;
+                max-width: 200px;
+                height: 280px;
+                font-size: 24px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .btn-container {
+                flex-direction: column; /* 將按钮列改為垂直排列 */
+                align-items: center; /* 居中對齊 */
+                gap: 20px; /* 設定垂直間距 */
+            }
+            .btn {
+                width: 80%; /* 縮小按钮的寬度，以適應較小的螢幕 */
+                max-width: 250px;
+                height: 280px;
+                font-size: 24px;
+            }
+            .rotateImage {
+                width: 80%; /* 縮小圖像的大小 */
+                max-width: 160px;
+                height: 160px;
+            }
+        }
+
+        /* 添加下拉式選單的外觀 */
+        .mobile-menu {
+            appearance: none; /* 隱藏原生外觀 */
+            background-color: #fcc299; /* 下拉式選單背景色 */
+            border: none; /* 去掉邊框 */
+            border-radius: 10px; /* 添加圓角 */
+            padding: 10px 20px; /* 調整內間距 */
+            font-size: 18px; /* 調整字體大小 */
+            color: brown; /* 調整文字顏色 */
+            cursor: pointer; /* 顯示手型游標 */
+            text-align: center;
+            padding-left: 0;
+        }
+
+        /* 添加下拉箭頭 */
+        .mobile-menu::after {
+            content: "\25BC"; /* Unicode箭頭字符 */
+            font-size: 18px;
+            position: absolute;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+        }
+
+        /* 懸停效果 */
+        .mobile-menu:hover {
+            background-color: #fcc2a9; /* 懸停時的背景色 */
+        }
+
+        /* 下拉選項樣式 */
+        .mobile-menu option {
+            background-color: #fcc299; /* 選項背景色 */
+            border: none; /* 去掉邊框 */
+            border-radius: 20px; /* 圓角 */
+            padding: 10px 20px; /* 內間距 */
+            font-size: 18px; /* 字體大小 */
+            color: brown; /* 文字顏色 */
+        }
+
+        /* 懸停效果 */
+        .mobile-menu option:hover {
+            background-color: #fcc2a9; /* 懸停時的背景色 */
+        }
+
+        /* 選中效果 */
+        .mobile-menu option:checked {
+             background-color: #fcc2a9; /* 選中時的背景色 */
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <img src="/media/LOGO.png" href="#" class="logo" onclick="window.location.href='{% url 'user_home' %}'">
+        <nav class="navbar">
+            <a href="#" onclick="window.location.href='{% url 'Training_mode' %}'"><b>訓練模式</b></a>
+            <a href="#" onclick="window.location.href='{% url 'store' %}'"><b>商店</b></a>
+            <a href="#" onclick="window.location.href='{% url 'myprofile' %}'"><b>個人資料</b></a>
+            <a href="#" onclick="window.location.href='{% url 'contact_therapists' %}'"><b>聯絡治療師</b></a>
+            <button class="logout" onclick="window.location.href='{% url 'logout' %}'">登出</button>
+        </nav>
+    </header>
+    <br><br><br><br>
+
+    <table width="100%">
+        <br><br>
+        <h1><span>治</span><span>療</span><span>紀</span><span>錄</span></h1>
+        <br>
+        <td class="select" align="center">
+            <button id="totalBtn" onclick="window.location.href='{% url 'chart_index' %}'">總覽</button>
+            <button id="danceBtn" onclick="window.location.href='{% url 'chart_dance' %}'">跳舞</button>
+            <button id="jumpBtn" onclick="window.location.href='{% url 'chart_jump' %}'">跳高</button>
+            <button id="walkBtn" onclick="window.location.href='{% url 'chart_walk' %}'">直線走路</button>
+            <button id="onefootBtn" onclick="window.location.href='{% url 'chart_onefoot' %}'">單腳站立</button>
+        </td>
+    </table>
+
+    <br><br>
+    <div>
+        <button id="yearBtn" onclick="updateMainChart(labels, initialData, 'year')">年</button>
+        <button id="monthBtn" onclick="updateMainChart(labels, initialData, 'month')">月</button>
+        <button id="weekBtn" onclick="updateMainChart(labels, initialData, 'week')">周</button>
+        <button id="dayBtn" onclick="updateMainChart(labels, initialData, 'day')">日</button>
+    </div>
+
+    <div class="chartContainer">
+        <div id="mainChartContainer">
+            <canvas id="barChart"></canvas>
+        </div>
+        <div class="subChartRow">
+            <div class="subChartContainer">
+                <canvas id="danceChart" data-month="一月" onclick="showWeeklyChart('danceChart', 'danceWeeklyChartContainer', this.getAttribute('data-month'))"></canvas>
+
+            </div>
+            <br>
+            <div class="subChartContainer">
+                <canvas id="jumpChart"></canvas>
+            </div>
+        </div>
+        <div class="subChartRow">
+            <div class="subChartContainer">
+                <canvas id="walkChart"></canvas>
+            </div>
+            <br>
+            <div class="subChartContainer">
+                <canvas id="onefootChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+
+    <br><br>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+<script>
+    function createMobileMenu() {
+    const navbar = document.querySelector(".navbar");
+    const mobileMenu = document.createElement("select");
+    mobileMenu.id = "mobile-menu";
+    mobileMenu.classList.add("mobile-menu");
+    mobileMenu.addEventListener("change", redirectToPage);
+
+    const menuOptions = [
+        { text: "選單", value: "" },
+        { text: "訓練模式", value: "{% url 'Training_mode' %}" },
+        { text: "商店", value: "{% url 'store' %}" },
+        { text: "個人資料", value: "{% url 'myprofile' %}" },
+        { text: "聯絡治療師", value: "{% url 'contact_therapists' %}" },
+        { text: "登出", value: "{% url 'logout' %}" },
+    ];
+
+    menuOptions.forEach(option => {
+        const menuItem = document.createElement("option");
+        menuItem.textContent = option.text;
+        menuItem.value = option.value;
+        mobileMenu.appendChild(menuItem);
+    });
+
+    navbar.appendChild(mobileMenu);
+}
+
+function redirectToPage() {
+    const selectedValue = document.getElementById("mobile-menu").value;
+    if (selectedValue) {
+        window.location.href = selectedValue;
+    }
+}
+
+// 檢查螢幕大小並在需要時創建下拉式選單
+function checkScreenWidth() {
+    const screenWidth = window.innerWidth;
+    const mobileMenuExists = document.getElementById("mobile-menu");
+
+    if (screenWidth <= 768 && !mobileMenuExists) {
+        createMobileMenu();
+    } else if (screenWidth > 768 && mobileMenuExists) {
+        const mobileMenu = document.getElementById("mobile-menu");
+        mobileMenu.remove();
+    }
+}
+
+// 監聽窗口大小變化
+window.addEventListener("resize", checkScreenWidth);
+
+// 頁面載入時檢查一次
+window.addEventListener("load", checkScreenWidth);
+</script>
+
+       <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+            const ctx = document.getElementById('barChart').getContext('2d');
+            const labels = ['跳舞', '跳高', '直線走路', '單腳站立'];
+
+            // 创建初始图表
+            const initialData = [0, 0, 0, 0];
+            updateMainChart(labels, initialData);
+
+            // 创建子图表的初始数据
+            const subChartLabels = ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'];
+            const initialSubChartData = Array(subChartLabels.length).fill(0);
+
+            // 创建四个子图表并设置名称
+            const danceChart = createSubChart('danceChart', subChartLabels, initialSubChartData, '舞蹈:各月訓練次數');
+            const jumpChart = createSubChart('jumpChart', subChartLabels, initialSubChartData, '跳高:各月訓練次數');
+            const walkChart = createSubChart('walkChart', subChartLabels, initialSubChartData, '直線走路:各月訓練次數');
+            const onefootChart = createSubChart('onefootChart', subChartLabels, initialSubChartData, '單腳站立:各月訓練次數');
+
+
+            const year = getQueryParameter('year');
+
+            fetch(`/api/training-data-year/`)  // 使用新的 URL 映射
+                .then(response => response.json())
+                .then(data => {
+                    const newData = [data.dance, data.jump, data.walk, data.onefoot];
+                    updateMainChart(labels, newData);
+                })
+                .catch(error => {
+                    console.error('Error fetching main data:', error);
+                });
+
+            // 发送Ajax请求获取跳舞训练每月数据
+            fetch('/api/dance-training-data/')  // 替换为获取跳舞数据的API端点URL
+                .then(response => response.json())
+                .then(data => {
+                    // 更新跳舞子图表数据
+                    updateSubChart(danceChart, subChartLabels, data);
+                })
+                .catch(error => {
+                    console.error('Error fetching dance data:', error);
+                });
+            // 发送Ajax请求获取跳高训练每月数据
+            fetch('/api/jump_training_data/')  // 替换为获取跳高数据的API端点URL
+                .then(response => response.json())
+                .then(data => {
+                    // 更新跳高子图表数据
+                    updateSubChart(jumpChart, subChartLabels, data);
+                })
+            .catch(error => {
+                console.error('Error fetching jump data:', error);
+            });
+            fetch('/api/walk_training_data/')  // 替换为获取直线走路数据的API端点URL
+            .then(response => response.json())
+            .then(data => {
+                // 更新直线走路子图表数据
+                updateSubChart(walkChart, subChartLabels, data);
+            })
+            .catch(error => {
+                console.error('Error fetching walk data:', error);
+            });
+            fetch('/api/onefoot_training_data/')  // 替换为获取单脚站立数据的API端点URL
+            .then(response => response.json())
+            .then(data => {
+                // 更新单脚站立子图表数据
+                updateSubChart(onefootChart, subChartLabels, data);
+            })
+            .catch(error => {
+                console.error('Error fetching onefoot data:', error);
+            });
+
+            // 更新主图表函数
+            function updateMainChart(labels, data) {
+            // Calculate total to convert numbers to percentages
+            const total = data.reduce((sum, value) => sum + value, 0);
+
+            // Calculate percentages
+            const percentages = data.map(value => ((value / total) * 100).toFixed(2)); // Round to two decimal places
+
+            const config = {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: '各模式次數占比',
+                        data: percentages,
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(255, 159, 64, 1)',
+                            'rgba(255, 205, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                        ],
+                        borderColor: [
+                            'rgb(255, 99, 132)',
+                            'rgb(255, 159, 64)',
+                            'rgb(255, 205, 86)',
+                            'rgb(75, 192, 192)',
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            display: false
+                        }
+                    },
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    width: 400,
+                    height: 400,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                            }
+                        }
+                    },
+                }
+            };
+
+            // Destroy the previous chart and create a new one
+            if (window.mainChart) {
+                window.mainChart.destroy();
+            }
+
+            // Create a new chart using the updated data and configuration
+            const ctx = document.getElementById('barChart').getContext('2d');
+            window.mainChart = new Chart(ctx, config);
+        }
+            function createSubChart(canvasId, subChartLabels, initialData, chartName) {
+                const subCtx = document.getElementById(canvasId).getContext('2d');
+
+                const subConfig = {
+                    type: 'line',
+                    data: {
+                        labels: subChartLabels,
+                        datasets: [{
+                            label: chartName, // 设置子图表的名称
+                            data: initialData,
+                            fill: false,
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                };
+                return new Chart(subCtx, subConfig);
+            }
+
+            // 更新子图表数据函数
+            function updateSubChart(chart, subChartLabels, data) {
+                chart.data.labels = subChartLabels;  // 使用所有月份标签
+                chart.data.datasets[0].data = Object.values(data);
+                chart.update();
+            }
+
+
+        });
+
+    </script>
+</body>
+</html>

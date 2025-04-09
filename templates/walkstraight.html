@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>walkstraight Button</title>
+</head>
+<body>
+    <h1>walkstraight Button</h1>
+    <form method="post" action="{% url 'walkstraight' %}">
+        {% csrf_token %}
+        <button type="submit">Start Dance</button>
+    </form>
+</body>
+</html>

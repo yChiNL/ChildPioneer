@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mediapipe 视频流实时检测</title>
+</head>
+<body>
+    <h1>Mediapipe 视频流实时检测</h1>
+    <img id="videoFeed" src="">
+    <script>
+        const video = document.getElementById('videoFeed');
+        video.src = "{% url 'video_feed' %}";
+    </script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebRTC Dance Detection</title>
+</head>
+<body>
+    <button id="startButton">Start Dance Detection</button>
+    <video id="videoElement" autoplay></video>
+
+    <script>
+        const startButton = document.getElementById('startButton');
+        const videoElement = document.getElementById('videoElement');
+
+        startButton.addEventListener('click', async () => {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                videoElement.srcObject = stream;
+
+                // 發送請求到後端
+                fetch('/start_dance_detection/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ start: true }),
+                });
+            } catch (error) {
+                console.error('Error accessing the camera:', error);
+            }
+        });
+    </script>
+</body>
+</html>

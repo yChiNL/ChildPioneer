@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dance Button</title>
+</head>
+<body>
+    <h1>Dance Button</h1>
+    <form method="post" action="{% url 'dance' %}">
+        {% csrf_token %}
+        <input type="hidden" name="difficulty" value="Easy">
+        <input type="number" name="times" placeholder="Enter additional text">
+        <button type="submit">簡單</button>
+    </form>
+    <form method="post" action="{% url 'dance' %}">
+        {% csrf_token %}
+        <input type="hidden" name="difficulty" value="Normal">
+        <input type="number" name="times" placeholder="Enter additional text">
+        <button type="submit">普通</button>
+    </form>
+    <form method="post" action="{% url 'dance' %}">
+        {% csrf_token %}
+        <input type="hidden" name="difficulty" value="Hard">
+        <input type="number" name="times" placeholder="Enter additional text">
+        <button type="submit">困難</button>
+    </form>
+</body>
+</html>

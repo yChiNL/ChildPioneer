@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="pythonProject3/dance_personal.py"></script>
+
+    <script src="https://cdn.medipipe.com/latest/mediapipe.js"></script>
+    <link rel="stylesheet" href="https://cdn.medipipe.com/latest/mediapipe.css">
+    <title>訓練頁面</title>
+</head>
+<body>
+    <h1>訓練頁面</h1>
+
+    <!-- 嵌入mediapipe視窗的區域 -->
+    <div id="mediapipe-container"></div>
+
+    <!-- 其他訓練相關內容 -->
+
+    <!-- 這裡可以添加你的訓練內容，按鈕等 -->
+
+    <!-- 嵌入mediapipe程式碼 -->
+    <video id="camera" autoplay width="640" height="480"></video>
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mediapipe/0.8.0/mediapipe.js"></script>
+<script>
+  // 在页面加载完成后执行
+  window.addEventListener('load', function () {
+    // 创建 MediaPipe 视窗
+    const container = document.getElementById('mediapipe-container');
+    const mediaPipeWindow = new mp.Pose({ locateFile: (file) => `https://cdn.jsdelivr.net/npm/mediapipe@0.8.0/${file}` });
+
+    // 初始化视窗
+    mediaPipeWindow.initialize().then(() => {
+      // 这里可以执行其他初始化操作
+
+      // 将视窗添加到页面
+      mediaPipeWindow.attach(container);
+
+      // 开始运行视窗
+      mediaPipeWindow.onResults((results) => {
+        // 处理 MediaPipe 的结果数据
+        // 可以在这里更新页面或执行其他操作
+      });
+    });
+  });
+</script>
+</body>
+</html>

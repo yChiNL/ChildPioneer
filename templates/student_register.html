@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>使用者註冊</title>
+
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing:border-box;
+            font-family: "Poppins", sans-serif;
+        }
+
+        body {
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            min-height:100vh;
+            background:url('/media/Login_background.jpg')no-repeat;
+            background-size:cover;
+            background-position:center;
+        }
+
+        .wrapper {
+            width:420px;
+            background:transparent;
+            border:2px solid rgba(255,255,255,2);
+            backdrop-filter:blur(20px);
+            box-shadow:0 0 10px rgba(0,0,0,.2);
+            color:white;
+            border-radius:10px;
+            padding:30px 40px;
+        }
+
+        .wrapper h1 {
+            font-size:36px;
+            text-align:center;
+        }
+
+        .wrapper .input-box{
+            position:relative;
+            width:100%;
+            height:50px;
+            border-bottom: 2px solid #fff;
+            margin:30px 0;
+        }
+
+        .input-box input{
+            width:100%;
+            height:100%;
+            background:transparent;
+            border:none;
+            outline:none;
+            font-size: 1em;
+            color: #fff;
+            font-weight: 600;
+            padding: 0 40px 0 12px;
+        }
+
+        .input-box label{
+            position: absolute;
+            top: 0%;
+            left: 5px;
+            transform: translateY(-50%);
+            font-size: 17px;
+            font-weight: 500;
+            pointer-events: none;
+            transition: .5s;
+        }
+
+        .input-box input:focus~label,
+        .input-box input:valid~label {
+            top: -5px;
+        }
+
+        .input-box box-icon {
+            position: absolute;
+            right:10px;
+            top:50%;
+            transform:translateY(-50%);
+            font-size:20px;
+        }
+
+        .wrapper .btn{
+            width:100%;
+            height:45px;
+            background:white;
+            border:none;
+            outline:none;
+            border-radius:40px;
+            box-shadow:0 0 10px rgba(0,0,0,.1);
+            cursor:pointer;
+            font-size:16px;
+            color:black;
+            font-weight:600;
+        }
+    </style>
+    <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
+</head>
+<body>
+    <table align="center">
+        <div class="wrapper">
+            <form method="POST" action="{% url 'student_register' %}">
+                <h1>使用者註冊</h1>
+                {% csrf_token %}
+                <div class="input-box" style="display:none">
+                    {{ form.user_type }}
+                </div>
+                <div class="input-box">
+                    <label>帳號</label>
+                    {{ form.username }}
+                </div>
+                <div class="input-box">
+                    <label>密碼</label>
+                    {{ form.password1 }}
+                </div>
+                <div class="input-box">
+                    <label>確認密碼</label>
+                    {{ form.password2 }}
+                </div>
+                <div class="input-box">
+                    <label>email</label>
+                    {{ form.email }}
+                </div>
+                <div class="input-box">
+                    <label>兒童姓名</label>
+                    {{ form.child_name }}
+                </div>
+                <button type="submit" class="btn">註冊</button>
+            </form>
+        </div>
+    </table>
+ </body>
+</html>
+
+
+

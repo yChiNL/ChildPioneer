@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>D3.js in Django</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+<h1>Your Data:</h1>
+<table>
+        <tr>
+            <th>模式</th>
+            <th>成功次數</th>
+            <th>訓練時長</th>
+            <th>評分</th>
+            <th>訓練時間</th>
+        </tr>
+        {% for item in data %}
+            <tr>
+                <td>{{ item.difficulty }}</td>
+                <td>{{ item.move_count }}</td>
+                <td>{{ item.failure_count }}</td>
+                <td>{{ item.grade }}</td>
+                <td>{{ item.run_time }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+</body>
+</html>

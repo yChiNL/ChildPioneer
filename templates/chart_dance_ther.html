@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>跳舞訓練紀錄</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url(https://fonts.googleapis.com/css?family=Signika:700,300,600);
+
+        html, body { height: 100%; }
+
+        h1 {
+            font-size:5em;
+            user-select:none;
+            text-align: center;
+        }
+        h2 {
+            font-size:2em;
+            user-select:none;
+            text-align: center;
+        }
+
+        h1 span { display:inline-block; animation:float .2s ease-in-out infinite; }
+            @keyframes float { 0%,100%{ transform:none; }
+            33%{ transform:translateY(-1px) rotate(-2deg); }
+            66%{ transform:translateY(1px) rotate(2deg); }
+        }
+
+        body:hover span { animation:bounce .6s; }
+            @keyframes bounce {
+            0%,100%{ transform:translate(0); }
+            25%{ transform:rotateX(20deg) translateY(2px) rotate(-3deg); }
+            50%{ transform:translateY(-20px) rotate(3deg) scale(1.1);  }
+        }
+
+        span:nth-child(4n) { color:hsl(30, 80%, 75%); text-shadow:1px 1px hsl(50, 75%, 45%), 2px 2px hsl(50, 45%, 45%), 3px 3px hsl(50, 45%, 45%), 4px 4px hsl(50, 75%, 45%); }
+        span:nth-child(4n-1) { color:hsl(135, 35%, 75%); text-shadow:1px 1px hsl(135, 35%, 45%), 2px 2px hsl(135, 35%, 45%), 3px 3px hsl(135, 35%, 45%), 4px 4px hsl(135, 35%, 45%); }
+        span:nth-child(4n-2) { color:hsl(48, 100%, 63%); text-shadow:1px 1px hsl(39, 64%, 47%), 2px 2px hsl(39, 64%, 47%), 3px 3px hsl(39, 64%, 47%), 4px 4px hsl(39, 64%, 47%); }
+        span:nth-child(4n-3) { color:hsl(340, 59%, 62%); text-shadow:1px 1px hsl(350, 45%, 50%), 2px 2px hsl(350, 45%, 50%), 3px 3px hsl(350, 45%, 50%), 4px 4px hsl(350, 45%, 50%); }
+
+        h1 span:nth-child(2){ animation-delay:.05s; }
+        h1 span:nth-child(3){ animation-delay:.1s; }
+        h1 span:nth-child(4){ animation-delay:.15s; }
+        h1 span:nth-child(5){ animation-delay:.2s; }
+        h1 span:nth-child(6){ animation-delay:.25s; }
+        h1 span:nth-child(7){ animation-delay:.3s; }
+        h1 span:nth-child(8){ animation-delay:.35s; }
+        h1 span:nth-child(9){ animation-delay:.4s; }
+        h1 span:nth-child(10){ animation-delay:.45s; }
+        h1 span:nth-child(11){ animation-delay:.5s; }
+        h1 span:nth-child(12){ animation-delay:.55s; }
+        h1 span:nth-child(13){ animation-delay:.6s; }
+        h1 span:nth-child(14){ animation-delay:.65s; }
+
+        @font-face {
+            font-family: 'cwTeXYen';
+            font-style: normal;
+            font-weight: 500;
+            src: url(//fonts.gstatic.com/ea/cwtexyen/v3/cwTeXYen-zhonly.eot);
+            src: url(//fonts.gstatic.com/ea/cwtexyen/v3/cwTeXYen-zhonly.eot?#iefix) format('embedded-opentype'),
+            url(//fonts.gstatic.com/ea/cwtexyen/v3/cwTeXYen-zhonly.woff2) format('woff2'),
+            url(//fonts.gstatic.com/ea/cwtexyen/v3/cwTeXYen-zhonly.woff) format('woff'),
+            url(//fonts.gstatic.com/ea/cwtexyen/v3/cwTeXYen-zhonly.ttf) format('truetype');
+        }
+        * {
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:"cwTeXYen","Lucida Sans Unicode", sans-serif;
+        }
+        body {
+            justify-content:center;
+            align-items:center;
+            min-height:100vh;
+            background:#fae7cd;
+            background-size:cover;
+            background-position:center;
+            background:url('/media/background.jpg');
+            background-repeat: repeat;
+        }
+        .header {
+            position:fixed;
+            top:0;
+            left:0;
+            width:100%;
+            height: 54px;
+            padding: 7px 50px;
+            background: #8B4513;
+            display: flex;
+            justify-content:space-between;
+            align-items:center;
+            z-index:100;
+        }
+        .logo {
+            height: 40px;
+        }
+        .navbar a {
+            position:relative;
+            font-size:20px;
+            color: #fae7cd;
+            font-weight:500;
+            text-decoration: none;
+            margin-left:40px;
+        }
+        .navbar a::before {
+            content: '';
+            position:absolute;
+            top:100%;
+            left:0;
+            width:0;
+            height:3px;
+            background:#fae7cd;
+            transition: .3s;
+        }
+        .navbar a:hover::before {
+            width: 100%;
+        }
+        .logout {
+            font-size: 18px;
+            width: 80px;
+            height: 35px;
+            margin-left: 40px;
+            background:white;
+            border:none;
+            outline:none;
+            border-radius:40px;
+            box-shadow:0 0 10px rgba(0,0,0,.1);
+            cursor:pointer;
+            font-size:16px;
+            color:#8B4513;
+            font-weight:600;
+            transition: .3s;
+        }
+        .logout:hover {
+            transform: scale(1.08);
+        }
+        .select button {
+            font-size: 22px;
+            font-weight: 600;
+            width: 120px;
+            height: 35px;
+            border: 2px solid #ff974d;
+            background-color: #fcc299;
+            color:brown;
+            border-radius:13px;
+            transition: .3s;
+        }
+        .select button:hover {
+            height: 40px;
+        }
+
+        .wrap{
+
+            border-radius:10px 10px 0px 0px;
+            box-shadow: 0 0 25px rgba(56,19,8,.3);
+        }
+        .center-table {
+            display:flex;
+            justify-content: center;
+            align-items: center;
+
+            border-radius:10px 10px 0px 0px;
+            box-shadow: 0 0 25px rgba(56,19,8,.2);
+            width: 80%;
+            margin: 0 auto;
+            border: 5px solid #e1864e;
+            width: 80%; /* 设置表格宽度 */
+            margin: 0 auto; /* 居中显示表格 */
+            overflow-y: auto;
+        }
+        .center-table table{
+            font-family: 'Oswald', sans-serif;
+            border-collapse:collapse;
+            width: 100%;
+        }
+        .center-table th{
+            background-color:#e1864e;
+            color:#ffffff;
+            width:25vw;
+            height:75px;
+            font-size: 25px;
+            position: sticky;
+            top: 0;
+            background-color: #e1864e; /* 可以根据需要设置表头的背景颜色 */
+            z-index: 1; /* 确保表头位于表格内容上方 */
+        }
+        .center-table td{
+            background-color:#ffecde;
+            width:25vw;
+            height:50px;
+            text-align:center;
+            font-size: 20px;
+            padding: 8px;
+            text-align: center;
+            overflow-y: auto;
+        }
+        .center-table tr{
+            border-bottom: 1px solid #dddddd;
+            padding: 8px;
+            text-align: center;
+        }
+        .center-table tr:last-of-type{
+            border-bottom: 2px solid #e1864e;
+        }
+        .center-table tr:nth-of-type(even) td{
+            background-color:#f3f3f3;
+        }
+        .center-table tbody {
+            display: block;
+            max-height: 500px; /* 设置内容区域的最大高度，可根据需要调整 */
+            overflow-y: auto;
+        }
+
+        .grid-container {
+            width: 100%;
+            grid-template-columns: repeat(5, 1fr); /* 创建5列 */
+            gap: 10px; /* 间隙大小 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .grid-item {
+            border: 1px solid #ccc;
+            padding: 15px;
+            text-align: center;
+            background-color: white;
+            border-radius: 10px;
+        }
+        .grid-item h2 {
+            text-align: left;
+            font-size: 18px;
+        }
+        .grid-item p {
+            font-size: 30px;
+        }
+
+        .btn {
+          /* 将按钮的背景颜色更改为橙色 */
+          background-color: #00000;
+          /* 其他样式属性保持不变 */
+          color: none;
+          border: none;
+          border-radius: 20px;
+          padding: 5px 15px;
+          cursor: pointer;
+        }
+        /* 设置按钮的鼠标悬停样式 */
+        .btn:hover {
+          background-color: #E0E0E0; /* 更改鼠标悬停时的颜色，如果需要的话 */
+        }
+
+        /* 添加@media查询，根据不同的屏幕宽度应用不同的样式 */
+        @media (max-width: 1024px) {
+            .navbar a {
+                font-size: 18px;
+                margin-left: 20px;
+            }
+
+            .logout {
+                font-size: 16px;
+                margin-left: 20px;
+            }
+
+            .btn-container {
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .btn {
+                width: 80%;
+                max-width: 250px;
+                height: 280px;
+                font-size: 30px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar a {
+                display: none;
+                font-size: 16px;
+                margin-left: 15px;
+            }
+
+            .logout {
+                display: none;
+                font-size: 14px;
+                margin-left: 15px;
+                width: 60px;
+                height: 30px;
+            }
+
+            .btn {
+                width: 70%;
+                max-width: 200px;
+                height: 280px;
+                font-size: 24px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .btn-container {
+                flex-direction: column; /* 將按钮列改為垂直排列 */
+                align-items: center; /* 居中對齊 */
+                gap: 20px; /* 設定垂直間距 */
+            }
+            .btn {
+                width: 80%; /* 縮小按钮的寬度，以適應較小的螢幕 */
+                max-width: 250px;
+                height: 280px;
+                font-size: 24px;
+            }
+            .rotateImage {
+                width: 80%; /* 縮小圖像的大小 */
+                max-width: 160px;
+                height: 160px;
+            }
+        }
+
+        /* 添加下拉式選單的外觀 */
+        .mobile-menu {
+            appearance: none; /* 隱藏原生外觀 */
+            background-color: #fcc299; /* 下拉式選單背景色 */
+            border: none; /* 去掉邊框 */
+            border-radius: 10px; /* 添加圓角 */
+            padding: 10px 20px; /* 調整內間距 */
+            font-size: 18px; /* 調整字體大小 */
+            color: brown; /* 調整文字顏色 */
+            cursor: pointer; /* 顯示手型游標 */
+            text-align: center;
+            padding-left: 0;
+        }
+
+        /* 添加下拉箭頭 */
+        .mobile-menu::after {
+            content: "\25BC"; /* Unicode箭頭字符 */
+            font-size: 18px;
+            position: absolute;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+        }
+
+        /* 懸停效果 */
+        .mobile-menu:hover {
+            background-color: #fcc2a9; /* 懸停時的背景色 */
+        }
+
+        /* 下拉選項樣式 */
+        .mobile-menu option {
+            background-color: #fcc299; /* 選項背景色 */
+            border: none; /* 去掉邊框 */
+            border-radius: 20px; /* 圓角 */
+            padding: 10px 20px; /* 內間距 */
+            font-size: 18px; /* 字體大小 */
+            color: brown; /* 文字顏色 */
+        }
+
+        /* 懸停效果 */
+        .mobile-menu option:hover {
+            background-color: #fcc2a9; /* 懸停時的背景色 */
+        }
+
+        /* 選中效果 */
+        .mobile-menu option:checked {
+             background-color: #fcc2a9; /* 選中時的背景色 */
+        }
+
+    </style>
+</head>
+<body>
+    <header class="header">
+        <img src="/media/LOGO.png" href="#" class="logo" onclick="window.location.href='{% url 'therapist_home' %}'">
+        <nav class="navbar">
+            <a href="#" onclick="window.location.href='{% url 'therapist_home' %}'"><b>首頁</b></a>
+            <a href="#" onclick="window.location.href='{% url 'therapist_update_profile' %}'"><b>個人資料</b></a>
+            <button class="logout" onclick="window.location.href='{% url 'logout' %}'">登出</button>
+        </nav>
+    </header>
+    <br><br><br><br>
+
+    <table width="100%">
+        <br><br>
+        <h1><span>治</span><span>療</span><span>紀</span><span>錄</span></h1>
+        <br>
+        <td class="select" align="center" valign="bottom">
+            <button id="totalBtn" onclick="window.location.href='{% url 'chart_index_ther' user_name %}'">總覽</button>
+            <button id="danceBtn" onclick="window.location.href='{% url 'chart_dance_ther' user_name %}'">跳舞</button>
+            <button id="jumpBtn" onclick="window.location.href='{% url 'chart_jump_ther' user_name %}'">跳高</button>
+            <button id="walkBtn" onclick="window.location.href='{% url 'chart_walk_ther' user_name %}'">直線走路</button>
+            <button id="onefootBtn" onclick="window.location.href='{% url 'chart_onefoot_ther' user_name %}'">單腳站立</button>
+        </td>
+    </table>
+
+    <br><br>
+    <p align="center" style="font-size: 45px; color: #4f2d1a; font-weight: 700;">各項難度訓練次數 | 平均訓練時長</p>
+    <br>
+
+    <div class="grid-container">
+        <div class="grid-item">
+            <h2>Very Easy</h2>
+            <p style="color: red;"><b>{{ VeryEasy }} 次 | {{ VeryEasy_time }} 秒</b></p>
+        </div>
+        <div class="grid-item">
+            <h2>Easy</h2>
+            <p style="color: #FFAA33;"><b>{{ Easy }} 次 | {{ Easy_time }} 秒</b></p>
+        </div>
+        <div class="grid-item">
+            <h2>Normal</h2>
+            <p style="color: blue;"><b>{{ Normal }} 次 | {{ Normal_time }} 秒</b></p>
+        </div>
+        <div class="grid-item">
+            <h2>Hard</h2>
+            <p style="color: green;"><b>{{ Hard }} 次 | {{ Hard_time }} 秒</b></p>
+        </div>
+        <div class="grid-item">
+            <h2>Very Hard</h2>
+            <p style="color: purple;"><b>{{ VeryHard }} 次 | {{ VeryHard_time }} 秒</b></p>
+        </div>
+    </div>
+
+    <br><br>
+    <p align="center" style="font-size: 38px; color: #4f2d1a; font-weight: 700;">治療細項表</p>
+    <br>
+
+    <div class="center-table">
+        <table>
+            <tr>
+                <th>
+                    <label for="difficulty-filter">訓練項目</label><br>
+                    <select id="difficulty-filter" onchange="filterTable()" class="btn">
+                        <option value="">全部</option>
+                        <option value="VeryEasy">VeryEasy</option>
+                        <option value="Easy">Easy</option>
+                        <option value="Normal">Normal</option>
+                        <option value="Hard">Hard</option>
+                        <option value="VeryHard">VeryHard</option>
+                    </select>
+                </th>
+                <th>
+                    訓練日期<br>
+                    <button id="date-button" onclick="dates()" class="btn">排序</button>
+                </th>
+                <th>
+                    成功次數<br>
+                    <button id="nb-button" onclick="nbbbb()" class="btn">排序</button>
+                </th>
+                <th>
+                    訓練時長<br>
+                    <button id="time-sort-button" onclick="toggleTimeSort()" class="btn">排序</button>
+                </th>
+                <th>
+                    訓練評分<br>
+                    <button id="ab-button" onclick="abcde()" class="btn">排序</button>
+                </th>
+            </tr>
+
+            {% for treatment in treatments %}
+            <tr align="center">
+                <td id="type">{{ treatment.difficulty }}</td>
+                <td id="time" style="width:35vw">{{ treatment.run_time }}</td>
+                <td id="successes">{{ treatment.move_count }}</td>
+                <td id="t_time">{{ treatment.t_time }}</td>
+                <td id="grade">{{ treatment.grade }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5">No Train yet.</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <br><br>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+<script>
+    function createMobileMenu() {
+    const navbar = document.querySelector(".navbar");
+    const mobileMenu = document.createElement("select");
+    mobileMenu.id = "mobile-menu";
+    mobileMenu.classList.add("mobile-menu");
+    mobileMenu.addEventListener("change", redirectToPage);
+
+    const menuOptions = [
+        { text: "選單", value: "" },
+        { text: "訓練模式", value: "{% url 'Training_mode' %}" },
+        { text: "商店", value: "{% url 'store' %}" },
+        { text: "個人資料", value: "{% url 'myprofile' %}" },
+        { text: "聯絡治療師", value: "{% url 'contact_therapists' %}" },
+        { text: "登出", value: "{% url 'logout' %}" },
+    ];
+
+    menuOptions.forEach(option => {
+        const menuItem = document.createElement("option");
+        menuItem.textContent = option.text;
+        menuItem.value = option.value;
+        mobileMenu.appendChild(menuItem);
+    });
+
+    navbar.appendChild(mobileMenu);
+}
+
+function redirectToPage() {
+    const selectedValue = document.getElementById("mobile-menu").value;
+    if (selectedValue) {
+        window.location.href = selectedValue;
+    }
+}
+
+// 檢查螢幕大小並在需要時創建下拉式選單
+function checkScreenWidth() {
+    const screenWidth = window.innerWidth;
+    const mobileMenuExists = document.getElementById("mobile-menu");
+
+    if (screenWidth <= 768 && !mobileMenuExists) {
+        createMobileMenu();
+    } else if (screenWidth > 768 && mobileMenuExists) {
+        const mobileMenu = document.getElementById("mobile-menu");
+        mobileMenu.remove();
+    }
+}
+
+// 監聽窗口大小變化
+window.addEventListener("resize", checkScreenWidth);
+
+// 頁面載入時檢查一次
+window.addEventListener("load", checkScreenWidth);
+</script>
+    <script>
+        let timeSortAscending = true;
+        let nbbb = true;
+        let abcd = true;
+        let dateee = true;
+
+        function filterTable() {
+        console.log("Filtering table."); // 添加这行
+        const difficultyFilter = document.getElementById('difficulty-filter').value; // 获取下拉菜单的选择值
+        const tableRows = document.querySelectorAll('.center-table table tr'); // 获取所有表格行
+
+        // 遍历所有表格行，根据选择值显示或隐藏行
+        tableRows.forEach(row => {
+        const difficultyCell = row.querySelector('#type'); // 获取每行的难度单元格
+
+        // 如果选择值是空或与当前行的难度匹配，则显示行，否则隐藏行
+        if (difficultyCell) {
+            if (difficultyFilter === ''||difficultyCell.textContent === difficultyFilter) {
+            console.log("yo.");
+            row.style.display = 'table-row'; // 显示行
+            } else {
+            console.log("yo.");
+            row.style.display = 'none'; // 隐藏行
+        }
+        }
+        });
+        }
+
+
+        function toggleTimeSort() {
+        // 获取按钮和表格行
+        const datebt = document.querySelector('#date-button');
+        const nbb = document.querySelector('#nb-button')
+        const abc = document.querySelector('#ab-button')
+        const timeSortButton = document.querySelector('#time-sort-button');
+        const table = document.querySelector('.center-table table');
+        const tbody = table.querySelector('tbody');
+        const rows = Array.from(table.querySelectorAll('tr'));
+        // 删除表头行
+        const headerRow = rows.shift();
+        // 使用sort函数根据时间排序
+        rows.sort((row1, row2) => {
+            const time1 = row1.querySelector('#t_time').textContent;
+            const time2 = row2.querySelector('#t_time').textContent;
+            // 将时间转换为秒或其他合适的格式，然后进行比较
+            // 这里假设时间格式是以秒为单位的字符串，可以根据实际情况进行修改
+            const timeValue1 = parseFloat(time1);
+            const timeValue2 = parseFloat(time2);
+            if (timeSortAscending) {
+                return timeValue1 - timeValue2;
+            } else {
+                return timeValue2 - timeValue1;
+            }
+        });
+        // 根据排序后的顺序重新添加行到表格
+        tbody.innerHTML = '';
+        tbody.appendChild(headerRow);
+        rows.forEach(row => {
+            tbody.appendChild(row);
+        });
+        // 切换排序方向并更新按钮文本
+        timeSortAscending = !timeSortAscending;
+        timeSortButton.textContent = timeSortAscending ? '由長至短' : '由短至長';
+        abc.textContent = '排序';
+        nbb.textContent = '排序';
+        mbb.textContent = '排序';
+        datebt.textContent ='排序'
+        }
+
+
+        function nbbbb() {
+        // 获取按钮和表格行
+        const datebt = document.querySelector('#date-button');
+        const nbb = document.querySelector('#nb-button')
+        const abc = document.querySelector('#ab-button')
+        const timeSortButton = document.querySelector('#time-sort-button');
+        const table = document.querySelector('.center-table table');
+        const tbody = table.querySelector('tbody');
+        const rows = Array.from(table.querySelectorAll('tr'));
+
+        // 删除表头行
+        const headerRow = rows.shift();
+
+        // 使用sort函数根据时间排序
+        rows.sort((row1, row2) => {
+            const successes1 = row1.querySelector('#successes').textContent;
+            const successes2 = row2.querySelector('#successes').textContent;
+
+            if (nbbb) {
+                return successes1 - successes2;
+            } else {
+                return successes2 - successes1;
+            }
+        });
+
+        // 根据排序后的顺序重新添加行到表格
+        tbody.innerHTML = '';
+        tbody.appendChild(headerRow);
+        rows.forEach(row => {
+            tbody.appendChild(row);
+        });
+
+        // 切换排序方向并更新按钮文本
+        nbbb = !nbbb;
+        nbb.textContent=nbbb ? '由多至少' : '由少至多';
+        abc.textContent = '排序';
+        timeSortButton.textContent = '排序';
+        datebt.textContent ='排序'
+        }
+
+        function abcde() {
+        // 获取按钮和表格行
+        const datebt = document.querySelector('#date-button');
+        const nbb = document.querySelector('#nb-button')
+        const abc = document.querySelector('#ab-button')
+        const timeSortButton = document.querySelector('#time-sort-button');
+        const table = document.querySelector('.center-table table');
+        const tbody = table.querySelector('tbody');
+        const rows = Array.from(table.querySelectorAll('tr'));
+
+        // 删除表头行
+        const headerRow = rows.shift();
+
+        // 使用sort函数根据时间排序
+        rows.sort((row1, row2) => {
+            const grade1 = row1.querySelector('#grade').textContent;
+            const grade2 = row2.querySelector('#grade').textContent;
+
+        // 以字符串形式比较评分
+        if (abcd) {
+            return grade1.localeCompare(grade2);
+        } else {
+            return grade2.localeCompare(grade1);
+        }
+        });
+
+        // 根据排序后的顺序重新添加行到表格
+        tbody.innerHTML = '';
+        tbody.appendChild(headerRow);
+        rows.forEach(row => {
+            tbody.appendChild(row);
+        });
+
+        // 切换排序方向并更新按钮文本
+        abcd = !abcd;
+        abc.textContent=abcd ? '由低至高' : '由高至低';
+        nbb.textContent = '排序';
+        timeSortButton.textContent = '排序';
+        datebt.textContent ='排序'
+        }
+
+
+        function parseDate(dateStr) {
+            const months = {
+                "Jan.": 0, "Feb.": 1, "Mar.": 2, "Apr.": 3, "May": 4, "June": 5,
+                "July": 6, "Aug.": 7, "Sept.": 8, "Oct.": 9, "Nov.": 10, "Dec.": 11
+              };
+            const dateParts = dateStr.match(/(\w+\.?) (\d+), (\d+), (\d+):(\d+) (a\.m\.|p\.m\.)/);
+            if (dateParts) {
+                const month = months[dateParts[1]];
+                const day = parseInt(dateParts[2], 10);
+                const year = parseInt(dateParts[3], 10);
+                let hours = parseInt(dateParts[4], 10);
+                const minutes = parseInt(dateParts[5], 10);
+                const ampm = dateParts[6];
+                if (ampm === "p.m." && hours < 12) {
+                    hours += 12;
+                } else if (ampm === "a.m." && hours === 12) {
+                    hours = 0;
+                }
+                return new Date(year, month, day, hours, minutes);
+            }
+            return null;
+        }
+
+        function dates() {
+            console.log("Sorting by date clicked.");
+            const nbb = document.querySelector('#nb-button')
+            const abc = document.querySelector('#ab-button')
+            const timeSortButton = document.querySelector('#time-sort-button');
+            const datebt = document.querySelector('#date-button');
+            const table = document.querySelector('.center-table table');
+            const tbody = table.querySelector('tbody');
+            const rows = Array.from(table.querySelectorAll('tr'));
+            const headerRow = rows.shift();
+            rows.sort((row1, row2) => {
+                const date1 = row1.querySelector('#time').textContent;
+                const date2 = row2.querySelector('#time').textContent;
+
+                const dateValue1 = parseDate(date1);
+                const dateValue2 = parseDate(date2);
+
+                console.log(dateValue1, dateValue2);
+
+                if (dateee) {
+                    return dateValue1 - dateValue2;
+                } else {
+                    return dateValue2 - dateValue1;
+                }
+            });
+
+            tbody.innerHTML = '';
+            tbody.appendChild(headerRow);
+            rows.forEach(row => {
+                tbody.appendChild(row);
+            });
+
+            dateee = !dateee;
+            datebt.textContent = dateee ? '由近至遠' : '由遠至近';
+            nbb.textContent = '排序';
+            timeSortButton.textContent = '排序';
+            abc.textContent = '排序';
+        }
+
+        const veryEasyCount = {{ VeryEasy }};
+        const easyCount = {{ Easy }};
+        const normalCount = {{ Normal }};
+        const hardCount = {{ Hard }};
+        const veryHardCount = {{ VeryHard }};
+
+        console.log(`Very Easy Count: ${veryEasyCount}`);
+        console.log(`Easy Count: ${easyCount}`);
+        console.log(`Normal Count: ${normalCount}`);
+        console.log(`Hard Count: ${hardCount}`);
+        console.log(`Very Hard Count: ${veryHardCount}`);
+
+    </script>
+</body>
+</html>

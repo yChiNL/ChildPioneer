@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>治療排程</title>
+    <style>
+        @font-face {
+            font-family: 'cwTeXYen';
+            font-style: normal;
+            font-weight: 500;
+            src: url(//fonts.gstatic.com/ea/cwtexyen/v3/cwTeXYen-zhonly.eot);
+            src: url(//fonts.gstatic.com/ea/cwtexyen/v3/cwTeXYen-zhonly.eot?#iefix) format('embedded-opentype'),
+            url(//fonts.gstatic.com/ea/cwtexyen/v3/cwTeXYen-zhonly.woff2) format('woff2'),
+            url(//fonts.gstatic.com/ea/cwtexyen/v3/cwTeXYen-zhonly.woff) format('woff'),
+            url(//fonts.gstatic.com/ea/cwtexyen/v3/cwTeXYen-zhonly.ttf) format('truetype');
+        }
+        * {
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:"cwTeXYen","Lucida Sans Unicode", sans-serif;
+        }
+        body {
+            justify-content:center;
+            align-items:center;
+            min-height:100vh;
+            background:#fae7cd;
+            background-size:cover;
+            background-position:center;
+            background:url('/media/background.jpg');
+            background-repeat: repeat;
+        }
+        .header {
+            position:fixed;
+            top:0;
+            left:0;
+            width:100%;
+            height: 54px;
+            padding: 7px 50px;
+            background: #8B4513;
+            display: flex;
+            justify-content:space-between;
+            align-items:center;
+            z-index:100;
+        }
+        .logo {
+            height: 40px;
+        }
+        .navbar a {
+            position:relative;
+            font-size:20px;
+            color: #fae7cd;
+            font-weight:500;
+            text-decoration: none;
+            margin-left:40px;
+        }
+        .navbar a::before {
+            content: '';
+            position:absolute;
+            top:100%;
+            left:0;
+            width:0;
+            height:3px;
+            background:#fae7cd;
+            transition: .3s;
+        }
+        .navbar a:hover::before {
+            width: 100%;
+        }
+        .logout {
+            font-size: 18px;
+            width: 80px;
+            height: 35px;
+            margin-left: 40px;
+            background:white;
+            border:none;
+            outline:none;
+            border-radius:40px;
+            box-shadow:0 0 10px rgba(0,0,0,.1);
+            cursor:pointer;
+            font-size:16px;
+            color: #8B4513;
+            font-weight:600;
+            transition: .3s;
+        }
+        .logout:hover {
+            transform: scale(1.08);
+        }
+
+        .center-table {
+            display:flex;
+            justify-content: center;
+            align-items: center;
+            overflow:hidden;
+            border-radius:10px 10px 0px 0px;
+            box-shadow: 0 0 25px rgba(56,19,8,.2);
+            width: 80%;
+            margin: 0 auto;
+            border: 5px solid #e1864e;
+        }
+        table{
+            font-family: 'Oswald', sans-serif;
+            border-collapse:collapse;
+        }
+        th{
+            background-color:#e1864e;
+            color:#ffffff;
+            width:25vw;
+            height:75px;
+            font-size: 25px;
+        }
+        td{
+            background-color:#ffecde;
+            width:25vw;
+            height:50px;
+            text-align:center;
+            font-size: 20px;
+        }
+        tr{
+            border-bottom: 1px solid #dddddd;
+        }
+        tr:last-of-type{
+            border-bottom: 2px solid #e1864e;
+        }
+        tr:nth-of-type(even) td{
+            background-color:#f3f3f3;
+        }
+
+        input {
+            width: 80px;
+            height: 35px;
+            font-size: 18px;
+            padding-left: 10px;
+        }
+        select{
+            width: 170px;
+            height: 35px;
+            font-size: 18px;
+            padding-left: 5px;
+        }
+
+        label {
+            font-size: 25px;
+            font-weight: 600;
+            color:#4f2d1a;
+            text-shadow:
+                -2px -2px 0 #fae7cd,
+                 2px -2px 0 #fae7cd,
+                -2px  2px 0 #fae7cd,
+                 2px  2px 0 #fae7cd;
+        }
+
+        h1{
+            font-size:3em;
+            color: #4f2d1a;
+        }
+        h2{
+            font-size:35px;
+            color: #4f2d1a;
+        }
+        .form-input-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 15px;
+        }
+
+        .form-input-container input {
+            margin-right: 10px;
+        }
+        .form-input-container select {
+            margin-right: 10px;
+        }
+
+        button[type="submit"] {
+            font-size: 23px;
+            padding: 10px 20px;
+            background-color: #e1864e;
+            color: #ffffff;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #a85420;
+        }
+
+        .instruction-container {
+            display: flex;
+            justify-content: center;
+            font-size: 22px;
+            font-weight: 600;
+            color: #4f2d1a;
+            line-height: 1.5;
+            padding: 15px;
+            text-shadow:
+                -2px -2px 0 #fae7cd,
+                 2px -2px 0 #fae7cd,
+                -2px  2px 0 #fae7cd,
+                 2px  2px 0 #fae7cd;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <img src="/media/LOGO.png" href="#" class="logo" onclick="window.location.href='{% url 'therapist_home' %}'">
+        <nav class="navbar">
+            <a href="#" onclick="window.location.href='{% url 'therapist_home' %}'"><b>首頁</b></a>
+            <a href="#" onclick="window.location.href='{% url 'therapist_update_profile' %}'"><b>個人資料</b></a>
+            <button class="logout" onclick="window.location.href='{% url 'logout' %}'">登出</button>
+        </nav>
+    </header>
+
+    <br><br><br><br><br><br>
+    <h1 align="center">治療對象：{{ user.child_name }}</h1>
+    <br><br><br>
+
+    <form method="post" onsubmit="return validateForm()">
+        {% csrf_token %}
+        <div class="form-input-container">
+            <label for="training_type">訓練模式：</label>
+            <select name="training_type" id="training_type_select" onchange="updateFrequencyInput()">
+                <option value="dance">Dance</option>
+                <option value="jump">Jump</option>
+                <option value="walkstraight">WalkStraight</option>
+                <option value="onefoot">OneFoot</option>
+            </select>
+            <br>
+
+            <label for="difficulty">訓練難度：</label>
+            <select name="difficulty" id="difficulty_select" onchange="updateFrequencyInput()"></select><br>
+
+            <label for="frequency">訓練次數：</label>
+            <input type="number" name="frequency" id="frequency_input"><br>
+        </div>
+        <div id="instruction"></div>
+        <div class="button-container">
+            <button type="submit">制定訓練</button>
+        </div>
+
+        <script>
+            const trainingTypeSelect = document.getElementById('training_type_select');
+            const difficultySelect = document.getElementById('difficulty_select');
+            const frequencyInput = document.getElementById('frequency_input');
+
+            const typeToDifficulty = {
+                'dance': ['VeryEasy', 'Easy', 'Normal', 'Hard', 'VeryHard'],
+                'jump': ['VeryEasy', 'Easy', 'Normal', 'Hard', 'VeryHard'],
+                'walkstraight': ['Easy', 'Normal', 'Hard'],
+                'onefoot': ['VeryEasy_Left', 'VeryEasy_Right', 'Easy_Left', 'Easy_Right', 'Normal', 'Hard_Left', 'Hard_Right']
+            };
+
+            function initializeDifficultyOptions() {
+                const selectedType = trainingTypeSelect.value;
+                const availableDifficulties = typeToDifficulty[selectedType] || [];
+
+                difficultySelect.innerHTML = '';
+                availableDifficulties.forEach(function (difficulty) {
+                    const option = document.createElement('option');
+                    option.value = difficulty;
+                    option.textContent = difficulty;
+                    difficultySelect.appendChild(option);
+                });
+            }
+
+            initializeDifficultyOptions();
+            trainingTypeSelect.addEventListener('change', initializeDifficultyOptions);
+
+            function updateFrequencyInput() {
+                const selectedType = trainingTypeSelect.value;
+                if (selectedType === 'walkstraight') {
+                    frequencyInput.value = '1';
+                    frequencyInput.setAttribute('readonly', 'readonly');
+                } else {
+                    frequencyInput.removeAttribute('readonly');
+                    frequencyInput.value = '';
+                }
+            }
+
+            function validateForm() {
+                const frequencyValue = parseInt(frequencyInput.value, 10);
+                if (isNaN(frequencyValue) || frequencyValue < 0) {
+                    alert('次數應是正整數');
+                    return false;
+                }
+                return true;
+            }
+
+            function updateFrequencyInput() {
+            const selectedType = trainingTypeSelect.value;
+            const selectedDifficulty = difficultySelect.value;
+            const instructionElement = document.getElementById('instruction');
+
+                if (selectedType === 'dance') {
+                    if(selectedDifficulty === 'VeryEasy') {
+                        instructionElement.innerHTML = '<p class="instruction-container">--跳舞等級說明<br>'
+                        + '最初階：共３種動作<br>'
+                        + '簡單的手部擺動，包含平舉以及左右傾斜手臂模擬飛機的姿勢。</p>';
+                    } else if(selectedDifficulty === 'Easy') {
+                        instructionElement.innerHTML = '<p class="instruction-container">--跳舞等級說明<br>'
+                        + '初階：共２種動作<br>'
+                        + '主要訓練孩童對於手肘的控制能力，<br>'
+                        + '雙手舉高與肩成水平，像是投降的姿勢，<br>'
+                        + '以及雙手向下與肩成水平，像是被架起來的姿勢。</p>';
+                    } else if(selectedDifficulty === 'Normal') {
+                        instructionElement.innerHTML = '<p class="instruction-container">--跳舞等級說明<br>'
+                        + '中階：共２種動作<br>'
+                        + '將初階動作延伸為不對稱動作，<br>'
+                        + '分別為左手舉起右手放低，以及左手放低右手舉起。</p>';
+                    } else if(selectedDifficulty === 'Hard') {
+                        instructionElement.innerHTML = '<p class="instruction-container">--跳舞等級說明<br>'
+                        + '高階：共４種動作<br>'
+                        + '包含初階及中階的動作，使孩童熟習應用及轉換。</p>';
+                    } else if(selectedDifficulty === 'VeryHard') {
+                        instructionElement.innerHTML = '<p class="instruction-container">--跳舞等級說明<br>'
+                        + '最高階：共４種動作<br>'
+                        + '包含初階及中階的動作，並加入手腕扭動方向的運用。</p>';
+                    }
+                } else if (selectedType === 'jump') {
+                    if(selectedDifficulty === 'VeryEasy') {
+                        instructionElement.innerHTML = '<p class="instruction-container">--跳高等級說明<br>'
+                        + '最初階：6分鐘<br>'
+                        + '以 10 公分的小老鼠圖案為跳高標準。</p>';
+                    } else if(selectedDifficulty === 'Easy') {
+                        instructionElement.innerHTML = '<p class="instruction-container">--跳高等級說明<br>'
+                        + '初階：8分鐘<r>'
+                        + '以 20 公分的小貓圖案p>';
+                    } else if(selectedDifficulty === 'Normal') {
+                        instructionElement.innerHTML = '<p class="instruction-container">--跳高等級說明<br>'
+                        + '中階：10分鐘<br>'
+                        + '以 30 公分的長頸鹿圖案為跳高標準。</p>';
+                    } else if(selectedDifficulty === 'Hard') {
+                        instructionElement.innerHTML = '<p class="instruction-container">--跳高等級說明<br>'
+                        + '高階：12分鐘<br>'
+                        + '跟隨老鼠左右橫跳 20 公分。</p>';
+                    } else if(selectedDifficulty === 'VeryHard') {
+                        instructionElement.innerHTML = '<p class="instruction-container">--跳高等級說明<br>'
+                        + '最高階：14分鐘<br>'
+                        + '跟隨老鼠左右橫跳 30 公分。</p>';
+                    }
+                } else if (selectedType === 'walkstraight') {
+                    if(selectedDifficulty === 'Easy') {
+                        instructionElement.innerHTML = '<p class="instruction-container">--直線走路等級說明<br>'
+                        + '初階：獨木橋行走寬度設置為 10 公分</p>';
+                    } else if(selectedDifficulty === 'Normal') {
+                        instructionElement.innerHTML = '<p class="instruction-container">--直線走路等級說明<br>'
+                        + '中階：場景縮小 25 %，並增加少量障礙物</p>';
+                    } else if(selectedDifficulty === 'Hard') {
+                        instructionElement.innerHTML = '<p class="instruction-container">--直線走路等級說明<br>'
+                        + '高階：場景縮小 50 %，並增加較多障礙物</p>';
+                    }
+                } else if (selectedType === 'onefoot') {
+                    if(selectedDifficulty === 'VeryEasy_Left' || selectedDifficulty === 'VeryEasy_Right') {
+                        instructionElement.innerHTML = '<p class="instruction-container">--單腳站立等級說明<br>'
+                        + '最初階：6分鐘<br>'
+                        + '使用左/右腳維持站立動作３秒。</p>';
+                    } else if(selectedDifficulty === 'Easy_Left' || selectedDifficulty === 'Easy_Right') {
+                        instructionElement.innerHTML = '<p class="instruction-container">--單腳站立等級說明<br>'
+                        + '初階：8分鐘<br>'
+                        + '使用左/右腳維持站立動作３秒。</p>';
+                    } else if(selectedDifficulty === 'Normal') {
+                        instructionElement.innerHTML = '<p class="instruction-container">--單腳站立等級說明<br>'
+                        + '中階：10分鐘<br>'
+                        + '單腳維持站立動作３秒，<br>'
+                        + '動作成功後會由鱷魚圖示指示換腳站立。</p>';
+                    } else if(selectedDifficulty === 'Hard_Left' || selectedDifficulty === 'Hard_Right') {
+                        instructionElement.innerHTML = '<p class="instruction-container">--單腳站立等級說明<br>'
+                        + '高階：12分鐘<br>'
+                        + '左/右腳在鱷魚圖示出現3秒後單腳跳起。</p>';
+                    }
+                }
+            }
+            trainingTypeSelect.addEventListener('change', updateFrequencyInput);
+            difficultySelect.addEventListener('change', updateFrequencyInput);
+            updateFrequencyInput();
+        </script>
+    </form>
+
+    <br><br><br>
+    <h2 align="center">已制定的訓練：</h2>
+    <br>
+
+    <div class="center-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>訓練模式</th>
+                    <th>訓練難度</th>
+                    <th>訓練次數</th>
+                    <th>完成</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for treatment in treatments %}
+                    <tr>
+                        <td>{{ treatment.training_type }}</td>
+                        <td>{{ treatment.difficulty }}</td>
+                        <td>{{ treatment.frequency }}</td>
+                        <td>{{ treatment.status }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <br><br>
+</body>
+</html>

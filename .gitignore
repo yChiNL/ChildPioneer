@@ -1,0 +1,5 @@
+.idea/
+.venv/
+__pycache__/
+pythonProject3/__pycache__/
+pythonProject3/_migrations/_pycache__/

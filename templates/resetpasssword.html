@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediaPipe Pose Detection</title>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils"></script>
+</head>
+<body>
+    <h1>MediaPipe Pose Detection</h1>
+    <button id="startButton">Start Camera</button>
+    <div id="videoContainer">
+        <video id="video" autoplay playsinline></video>
+        <canvas id="canvas"></canvas>
+    </div>
+    <script>
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const context = canvas.getContext('2d');
+        const startButton = document.getElementById('startButton');
+
+        let isCameraRunning = false;
+        let pose;
+
+        startButton.addEventListener('click', () => {
+            if (!isCameraRunning) {
+                startCamera();
+                isCameraRunning = true;
+                startButton.textContent = 'Stop Camera';
+            } else {
+                stopCamera();
+                isCameraRunning = false;
+                startButton.textContent = 'Start Camera';
+            }
+        });
+
+        function startCamera() {
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(function(stream) {
+                    video.srcObject = stream;
+                    pose = new Pose({
+                        locateFile: file => `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`,
+                    });
+                    pose.onResults(onPoseResults);
+                })
+                .catch(function(error) {
+                    console.error('Error accessing the camera:', error);
+                });
+        }
+
+        function stopCamera() {
+            if (pose) {
+                pose.close();
+            }
+            if (video.srcObject) {
+                video.srcObject.getTracks().forEach(track => track.stop());
+            }
+            context.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        function onPoseResults(results) {
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            drawConnectors(context, results.poseLandmarks, POSE_CONNECTIONS,
+                           { color: '#00FF00', lineWidth: 2 });
+            drawLandmarks(context, results.poseLandmarks,
+                          { color: '#FF0000', lineWidth: 2 });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Therapist Home</title>
+    <style>
+        @font-face {
+            font-family: 'cwTeXYen';
+            font-style: normal;
+            font-weight: 500;
+            src: url(//fonts.gstatic.com/ea/cwtexyen/v3/cwTeXYen-zhonly.eot);
+            src: url(//fonts.gstatic.com/ea/cwtexyen/v3/cwTeXYen-zhonly.eot?#iefix) format('embedded-opentype'),
+            url(//fonts.gstatic.com/ea/cwtexyen/v3/cwTeXYen-zhonly.woff2) format('woff2'),
+            url(//fonts.gstatic.com/ea/cwtexyen/v3/cwTeXYen-zhonly.woff) format('woff'),
+            url(//fonts.gstatic.com/ea/cwtexyen/v3/cwTeXYen-zhonly.ttf) format('truetype');
+        }
+        * {
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:"cwTeXYen","Lucida Sans Unicode", sans-serif;
+        }
+        body {
+            justify-content:center;
+            align-items:center;
+            min-height:100vh;
+            background:#fae7cd;
+            background-size:cover;
+            background-position:center;
+            background:url('/media/background.jpg');
+            background-repeat: repeat;
+        }
+        .header {
+            position:fixed;
+            top:0;
+            left:0;
+            width:100%;
+            height: 54px;
+            padding: 7px 50px;
+            background: #8B4513;
+            display: flex;
+            justify-content:space-between;
+            align-items:center;
+            z-index:100;
+        }
+        .logo {
+            height: 40px;
+        }
+        .navbar a {
+            position:relative;
+            font-size:20px;
+            color: #fae7cd;
+            font-weight:500;
+            text-decoration: none;
+            margin-left:40px;
+        }
+        .navbar a::before {
+            content: '';
+            position:absolute;
+            top:100%;
+            left:0;
+            width:0;
+            height:3px;
+            background:#fae7cd;
+            transition: .3s;
+        }
+        .navbar a:hover::before {
+            width: 100%;
+        }
+        .logout {
+            font-size: 18px;
+            width: 80px;
+            height: 35px;
+            margin-left: 40px;
+            background:white;
+            border:none;
+            outline:none;
+            border-radius:40px;
+            box-shadow:0 0 10px rgba(0,0,0,.1);
+            cursor:pointer;
+            font-size:16px;
+            color: #8B4513;
+            font-weight:600;
+            transition: .3s;
+        }
+        .logout:hover {
+            transform: scale(1.08);
+        }
+
+        .center-table {
+            display:flex;
+            justify-content: center;
+            align-items: center;
+            overflow:hidden;
+            border-radius:10px 10px 0px 0px;
+            box-shadow: 0 0 25px rgba(56,19,8,.2);
+            width: 80%;
+            margin: 0 auto;
+            border: 5px solid #e1864e;
+        }
+        table{
+            font-family: 'Oswald', sans-serif;
+            border-collapse:collapse;
+        }
+        th{
+            background-color:#e1864e;
+            color:#ffffff;
+            width:25vw;
+            height:75px;
+            font-size: 25px;
+        }
+        td{
+            background-color:#ffecde;
+            width:25vw;
+            height:50px;
+            text-align:center;
+            font-size: 22px;
+        }
+        tr{
+            border-bottom: 1px solid #dddddd;
+        }
+        tr:last-of-type{
+            border-bottom: 2px solid #e1864e;
+        }
+        tr:nth-of-type(even) td{
+            background-color:#f3f3f3;
+        }
+
+        input {
+            width: 200px;
+            height: 35px;
+            font-size: 18px;
+            padding-left: 10px;
+            transform: translateY(-4%);
+        }
+        label {
+            font-size: 30px;
+            color:#4f2d1a;
+        }
+        h1{
+            font-size:3em;
+            color:#4f2d1a;
+        }
+        .btnNew {
+            height: 35px;
+            width: 70px;
+            font-size: 23px;
+            background-color: #e1864e; /* 按钮背景颜色 */
+            color: #ffffff; /* 按钮文字颜色 */
+            border: none;
+            border-radius: 5px; /* 按钮圆角 */
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btnNew:hover {
+            background-color: #a85420;
+        }
+        .btnDelete {
+            font-size: 18px;
+            width:100px;
+            height:35px;
+            background:white;
+            border: 2px solid rgba(188,188,188,2);
+            color:brown;
+            transition: 0.2s;
+            margin-left: 10px;
+            border-radius: 5px;
+        }
+        .btnDelete:hover {
+            color: #fff;
+            background-color: #c50f16;
+        }
+    </style>
+</head>
+<body align="center">
+    <header class="header">
+        <img src="/media/LOGO.png" href="#" class="logo">
+        <nav class="navbar">
+            <a href="#" onclick="window.location.href='{% url 'therapist_home' %}'"><b>首頁</b></a>
+            <a href="#" onclick="window.location.href='{% url 'therapist_update_profile' %}'"><b>個人資料</b></a>
+            <button class="logout" onclick="window.location.href='{% url 'logout' %}'">登出</button>
+        </nav>
+    </header>
+
+    <br><br><br><br><br>
+    {% block content %}
+    <br><br><br>
+
+    <form method="post" action="{% url 'add_friend' %}">
+        {% csrf_token %}
+        <label for="username" ><b>新增孩童：</b></label>
+        <input type="text" id="username" name="username" placeholder=" 輸入使用者帳號" required>
+        <button class="btnNew" type="submit">新增</button>
+    </form>
+    <br><br><br>
+    <h1>兒童列表</h1>
+    <br><br>
+    <div class="center-table">
+        <table>
+            <tr>
+                <th>兒童名稱</th>
+                <th>制定治療內容</th>
+                <th>查看治療紀錄</th>
+                <th>聯絡方式</th>
+                <th>刪除</th>
+            </tr>
+            {% for friend in user.friends.all %}
+            <tr>
+                <td>{{ friend.child_name }}</td>
+                <td><a href="{% url 'schedule_treatment' user_id=friend.id %}">制定訓練</a></td>
+                <td><a href="{% url 'chart_index_ther' user_name=friend.child_name %}">查看紀錄</a></td>
+                <td><a href="{% url 'contact_user' user_id=friend.id %}">聯絡</a></td>
+                <td>
+                    <form id="deleteForm{{ friend.id }}" method="post" action="{% url 'delete_friend' friend.id %}">
+                        {% csrf_token %}
+                        <button class="btnDelete" type="button" onclick="confirmDelete('{{ friend.id }}')">刪除</button>
+                    </form>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4">No friends yet.</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    {% endblock %}
+<script>
+function confirmDelete(friendId) {
+    var result = confirm("確定要刪除兒童嗎？"); // 顯示確認提示框
+
+    if (result) {
+        // 如果使用者按下確認，手动提交对应的表单
+        document.getElementById("deleteForm" + friendId).submit();
+    } else {
+        // 如果使用者按下取消，不執行任何操作
+        // 这里可以添加一些取消时的提示或其他操作
+    }
+}
+</script>
+</body>
+</html>
+

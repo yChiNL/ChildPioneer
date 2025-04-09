@@ -1,0 +1,398 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>直線走路訓練</title>
+    <style>
+        @import url(https://fonts.googleapis.com/css?family=Signika:700,300,600);
+
+        html, body { height: 100%; }
+
+        h1 {
+            font-size:5em;
+            user-select:none;
+            text-align: center;
+        }
+        h2 {
+            font-size:3em;
+            user-select:none;
+            text-align: center;
+        }
+
+        h1 span { display:inline-block; animation:float .2s ease-in-out infinite; }
+
+        @keyframes float {
+            0%,100%{ transform:none; }
+            33%{ transform:translateY(-1px) rotate(-2deg); }
+            66%{ transform:translateY(1px) rotate(2deg); }
+        }
+
+        body:hover span { animation:bounce .6s; }
+            @keyframes bounce {
+            0%,100%{ transform:translate(0); }
+            25%{ transform:rotateX(20deg) translateY(2px) rotate(-3deg); }
+            50%{ transform:translateY(-20px) rotate(3deg) scale(1.1);  }
+        }
+
+        span:nth-child(6n) { color:hsl(50, 75%, 55%); text-shadow:1px 1px hsl(50, 75%, 45%), 2px 2px hsl(50, 45%, 45%), 3px 3px hsl(50, 45%, 45%), 4px 4px hsl(50, 75%, 45%); }
+        span:nth-child(6n-1) { color:hsl(135, 35%, 55%); text-shadow:1px 1px hsl(135, 35%, 45%), 2px 2px hsl(135, 35%, 45%), 3px 3px hsl(135, 35%, 45%), 4px 4px hsl(135, 35%, 45%); }
+        span:nth-child(6n-2) { color:hsl(155, 35%, 60%); text-shadow:1px 1px hsl(155, 25%, 50%), 2px 2px hsl(155, 25%, 50%), 3px 3px hsl(155, 25%, 50%), 4px 4px hsl(140, 25%, 50%); }
+        span:nth-child(6n-3) { color:hsl(30, 65%, 60%); text-shadow:1px 1px hsl(30, 45%, 50%), 2px 2px hsl(30, 45%, 50%), 3px 3px hsl(30, 45%, 50%), 4px 4px hsl(30, 45%, 50%); }
+        span:nth-child(6n-4) { color:hsl(330, 60%, 80%); text-shadow:1px 1px hsl(330, 60%, 70%), 2px 2px hsl(330, 60%, 60%), 3px 3px hsl(330, 60%, 50%), 4px 4px hsl(330, 60%, 40%); }
+        span:nth-child(6n-5) { color:hsl(270, 40%, 70%); text-shadow:1px 1px hsl(270, 40%, 60%), 2px 2px hsl(270, 40%, 50%), 3px 3px hsl(270, 40%, 40%), 4px 4px hsl(270, 40%, 30%); }
+
+        h1 span:nth-child(2){ animation-delay:.05s; }
+        h1 span:nth-child(3){ animation-delay:.1s; }
+        h1 span:nth-child(4){ animation-delay:.15s; }
+        h1 span:nth-child(5){ animation-delay:.2s; }
+        h1 span:nth-child(6){ animation-delay:.25s; }
+        h1 span:nth-child(7){ animation-delay:.3s; }
+        h1 span:nth-child(8){ animation-delay:.35s; }
+        h1 span:nth-child(9){ animation-delay:.4s; }
+        h1 span:nth-child(10){ animation-delay:.45s; }
+        h1 span:nth-child(11){ animation-delay:.5s; }
+        h1 span:nth-child(12){ animation-delay:.55s; }
+        h1 span:nth-child(13){ animation-delay:.6s; }
+        h1 span:nth-child(14){ animation-delay:.65s; }
+
+        @font-face {
+            font-family: 'cwTeXYen';
+            font-style: normal;
+            font-weight: 500;
+            src: url(//fonts.gstatic.com/ea/cwtexyen/v3/cwTeXYen-zhonly.eot);
+            src: url(//fonts.gstatic.com/ea/cwtexyen/v3/cwTeXYen-zhonly.eot?#iefix) format('embedded-opentype'),
+            url(//fonts.gstatic.com/ea/cwtexyen/v3/cwTeXYen-zhonly.woff2) format('woff2'),
+            url(//fonts.gstatic.com/ea/cwtexyen/v3/cwTeXYen-zhonly.woff) format('woff'),
+            url(//fonts.gstatic.com/ea/cwtexyen/v3/cwTeXYen-zhonly.ttf) format('truetype');
+        }
+        * {
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:"cwTeXYen","Lucida Sans Unicode", sans-serif;
+        }
+        body {
+            justify-content:center;
+            align-items:center;
+            min-height:100vh;
+            background:#fae7cd;
+            background-size:cover;
+            background-position:center;
+            background:url('/media/background.jpg');
+            background-repeat: repeat;
+        }
+        .header {
+            position:fixed;
+            top:0;
+            left:0;
+            width:100%;
+            height: 54px;
+            padding: 7px 50px;
+            background: #8B4513;
+            display: flex;
+            justify-content:space-between;
+            align-items:center;
+            z-index:100;
+        }
+        .logo {
+            height: 40px;
+        }
+        .navbar a {
+            position:relative;
+            font-size:20px;
+            color: #fae7cd;
+            font-weight:500;
+            text-decoration: none;
+            margin-left:40px;
+        }
+        .navbar a::before {
+            content: '';
+            position:absolute;
+            top:100%;
+            left:0;
+            width:0;
+            height:3px;
+            background:#fae7cd;
+            transition: .3s;
+        }
+        .navbar a:hover::before {
+            width: 100%;
+        }
+        .logout {
+            font-size: 18px;
+            width: 80px;
+            height: 35px;
+            margin-left: 40px;
+            background:white;
+            border:none;
+            outline:none;
+            border-radius:40px;
+            box-shadow:0 0 10px rgba(0,0,0,.1);
+            cursor:pointer;
+            font-size:16px;
+            color: #8B4513;
+            font-weight:600;
+            transition: .3s;
+        }
+        .logout:hover {
+            transform: scale(1.08);
+        }
+        .startBtn {
+            width:280px;
+            height: 85px;
+            background:transparent;
+            border: 3.5px solid rgba(250,231,205,2);
+            background-color: #fcc299;
+            box-shadow: 0 0 25px rgba(156,99,58,.2);
+            color: brown;
+            border-radius: 30px;
+            transition: 0.3s;
+        }
+        .startBtn:hover {
+             transform:scale(1.1);
+        }
+        .startBtn p {
+            font-size: 48px;
+            font-weight: 900;
+        }
+        .left {
+            float: left;
+            width: 50%;
+        }
+
+        .right {
+            float: right;
+            width: 50%;
+        }
+
+        .iframe-style {
+           border-radius:10px;
+           width: 700px;
+           height: 600px;
+        }
+
+        @media (max-width: 1024px) {
+            .navbar a {
+                font-size: 18px;
+                margin-left: 20px;
+            }
+
+            .logout {
+                font-size: 16px;
+                margin-left: 20px;
+            }
+
+            .btn-container {
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .btn {
+                width: 80%;
+                max-width: 250px;
+                height: 280px;
+                font-size: 30px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar a {
+                display: none;
+                font-size: 16px;
+                margin-left: 15px;
+            }
+
+            .logout {
+                display: none;
+                font-size: 14px;
+                margin-left: 15px;
+                width: 60px;
+                height: 30px;
+            }
+
+            .btn {
+                width: 70%;
+                max-width: 200px;
+                height: 280px;
+                font-size: 24px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .btn-container {
+                flex-direction: column; /* 將按钮列改為垂直排列 */
+                align-items: center; /* 居中對齊 */
+                gap: 20px; /* 設定垂直間距 */
+            }
+            .btn {
+                width: 80%; /* 縮小按钮的寬度，以適應較小的螢幕 */
+                max-width: 250px;
+                height: 280px;
+                font-size: 24px;
+            }
+            .rotateImage {
+                width: 80%; /* 縮小圖像的大小 */
+                max-width: 160px;
+                height: 160px;
+            }
+        }
+
+        /* 添加下拉式選單的外觀 */
+        .mobile-menu {
+            appearance: none; /* 隱藏原生外觀 */
+            background-color: #fcc299; /* 下拉式選單背景色 */
+            border: none; /* 去掉邊框 */
+            border-radius: 10px; /* 添加圓角 */
+            padding: 10px 20px; /* 調整內間距 */
+            font-size: 18px; /* 調整字體大小 */
+            color: brown; /* 調整文字顏色 */
+            cursor: pointer; /* 顯示手型游標 */
+            text-align: center;
+            padding-left: 0;
+        }
+
+        /* 添加下拉箭頭 */
+        .mobile-menu::after {
+            content: "\25BC"; /* Unicode箭頭字符 */
+            font-size: 18px;
+            position: absolute;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+        }
+
+        /* 懸停效果 */
+        .mobile-menu:hover {
+            background-color: #fcc2a9; /* 懸停時的背景色 */
+        }
+
+        /* 下拉選項樣式 */
+        .mobile-menu option {
+            background-color: #fcc299; /* 選項背景色 */
+            border: none; /* 去掉邊框 */
+            border-radius: 20px; /* 圓角 */
+            padding: 10px 20px; /* 內間距 */
+            font-size: 18px; /* 字體大小 */
+            color: brown; /* 文字顏色 */
+        }
+
+        /* 懸停效果 */
+        .mobile-menu option:hover {
+            background-color: #fcc2a9; /* 懸停時的背景色 */
+        }
+
+        /* 選中效果 */
+        .mobile-menu option:checked {
+             background-color: #fcc2a9; /* 選中時的背景色 */
+        }
+    </style>
+    <script>
+        function loadStartTrainPage() {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', 'starttrain.html', true);
+
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                  var startTrainContent = document.getElementById('startTrainContent');
+                  startTrainContent.innerHTML = xhr.responseText;
+                }
+            };
+
+            xhr.send();
+        }
+    </script>
+</head>
+<body>
+    <header class="header">
+        <img src="/media/LOGO.png" href="#" class="logo" onclick="window.location.href='{% url 'user_home' %}'">
+            <nav class="navbar">
+                <a href="#" onclick="window.location.href='{% url 'Training_mode' %}'"><b>訓練模式</b></a>
+                <a href="#" onclick="window.location.href='{% url 'store' %}'"><b>商店</b></a>
+                <a href="#" onclick="window.location.href='{% url 'myprofile' %}'"><b>個人資料</b></a>
+                <a href="#" onclick="window.location.href='{% url 'contact_therapists' %}'"><b>聯絡治療師</b></a>
+                <button class="logout" onclick="window.location.href='{% url 'logout' %}'">登出</button>
+            </nav>
+      </header>
+    <br><br><br><br><br>
+    <div class="left" align="center">
+        <!--左區塊內容-->
+        <iframe width="600" height="600" src={{ video }} title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+    </div>
+
+    <div class="right" align="center">
+        <!--右區塊內容-->
+        <br><br>
+        <h1><span>直線</span><span>走路</span><span>訓練</span></h1>
+        <br><br>
+        <h2>{{ ShowMode }}</h2>
+        <br>
+        <h3>{{ mode_description }}</h3>
+        <h3>{{ goal }}</h3>
+        <br>
+        <form method="post" action="{% url 'walk_start' mode=mode %}">
+        {% csrf_token %}
+            <input type="hidden" name="selected_mode" value="{{ mode }}" onclick="loadStartTrainPage()">
+            <button class="startBtn">
+                <script src="https://cdn.lordicon.com/bhenfmcm.js"></script>
+                <p>開始訓練！</p>
+            </button>
+        </form>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script>
+        function createMobileMenu() {
+            const navbar = document.querySelector(".navbar");
+            const mobileMenu = document.createElement("select");
+            mobileMenu.id = "mobile-menu";
+            mobileMenu.classList.add("mobile-menu");
+            mobileMenu.addEventListener("change", redirectToPage);
+
+            const menuOptions = [
+                { text: "選單", value: "" },
+                { text: "訓練模式", value: "{% url 'Training_mode' %}" },
+                { text: "商店", value: "{% url 'store' %}" },
+                { text: "個人資料", value: "{% url 'myprofile' %}" },
+                { text: "聯絡治療師", value: "{% url 'contact_therapists' %}" },
+                { text: "登出", value: "{% url 'logout' %}" },
+            ];
+
+            menuOptions.forEach(option => {
+                const menuItem = document.createElement("option");
+                menuItem.textContent = option.text;
+                menuItem.value = option.value;
+                mobileMenu.appendChild(menuItem);
+            });
+
+            navbar.appendChild(mobileMenu);
+        }
+
+        function redirectToPage() {
+            const selectedValue = document.getElementById("mobile-menu").value;
+            if (selectedValue) {
+                window.location.href = selectedValue;
+            }
+        }
+
+        // 檢查螢幕大小並在需要時創建下拉式選單
+        function checkScreenWidth() {
+            const screenWidth = window.innerWidth;
+            const mobileMenuExists = document.getElementById("mobile-menu");
+
+            if (screenWidth <= 768 && !mobileMenuExists) {
+                createMobileMenu();
+            } else if (screenWidth > 768 && mobileMenuExists) {
+                const mobileMenu = document.getElementById("mobile-menu");
+                mobileMenu.remove();
+            }
+        }
+
+        // 監聽窗口大小變化
+        window.addEventListener("resize", checkScreenWidth);
+
+        // 頁面載入時檢查一次
+        window.addEventListener("load", checkScreenWidth);
+    </script>
+</body>
+</html>

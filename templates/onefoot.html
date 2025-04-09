@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Onefoot Button</title>
+</head>
+<body>
+    <h1>Onefoot Button</h1>
+    <form method="post" action="{% url 'onefoot' %}">
+        {% csrf_token %}
+        <button type="submit">Start</button>
+    </form>
+</body>
+</html>
